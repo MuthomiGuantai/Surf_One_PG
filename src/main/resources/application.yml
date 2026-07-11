@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: surf-one-pg
+  datasource:
+    # Point this at your FreeRADIUS database (or a dedicated DB with FK access to radcheck/radreply)
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:radius}?useSSL=false&serverTimezone=Africa/Nairobi
+    username: ${DB_USER:radius}
+    password: ${DB_PASSWORD:changeme}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+kopokopo:
+  base-url: ${KOPOKOPO_BASE_URL:https://sandbox.kopokopo.com}
+  client-id: ${KOPOKOPO_CLIENT_ID:}
+  client-secret: ${KOPOKOPO_CLIENT_SECRET:}
+  till-number: ${KOPOKOPO_TILL_NUMBER:}
+  payment-channel: "M-PESA STK Push"
+  # Public URL Kopo Kopo will POST payment results to. Must be reachable from the internet (ngrok in sandbox).
+  callback-url: ${KOPOKOPO_CALLBACK_URL:https://your-domain.example.com/api/v1/webhooks/kopokopo}
+
+surfonepg:
+  # NAS / Mikrotik router identifier used when writing radacct rows and Mikrotik-Rate-Limit reply attrs
+  nas-identifier: ${NAS_IDENTIFIER:mikrotik-hotspot-01}
+  # How long an unpaid STK push stays PENDING before we mark it EXPIRED (minutes)
+  payment-timeout-minutes: 5
+
+logging:
+  level:
+    co.ke.surfonepg: DEBUG
