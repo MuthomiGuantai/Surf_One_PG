@@ -1,0 +1,71 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: surf-one-pg
+  
+  datasource:
+    # Aiven MySQL connection
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+        generate_statistics: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+    out-of-order: false
+
+kopokopo:
+  base-url: ${KOPOKOPO_BASE_URL:https://api.kopokopo.com}
+  client-id: ${KOPOKOPO_CLIENT_ID}
+  client-secret: ${KOPOKOPO_CLIENT_SECRET}
+  till-number: ${KOPOKOPO_TILL_NUMBER}
+  payment-channel: "M-PESA STK Push"
+  callback-url: ${KOPOKOPO_CALLBACK_URL}
+  api-webhook-secret: ${KOPOKOPO_API_WEBHOOK_SECRET}
+
+surfonepg:
+  nas-identifier: ${NAS_IDENTIFIER:mikrotik-hotspot-01}
+  payment-timeout-minutes: ${PAYMENT_TIMEOUT_MINUTES:5}
+
+logging:
+  level:
+    co.ke.surfonepg: ${LOGGING_LEVEL_CO_KE_SURFONEPG:INFO}
+    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK:WARN}
+    org.hibernate: ${LOGGING_LEVEL_ORG_HIBERNATE:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator for Render health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+
