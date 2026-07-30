@@ -7,8 +7,8 @@ spring:
   datasource:
     # Point this at your FreeRADIUS database (or a dedicated DB with FK access to radcheck/radreply)
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:radius}?useSSL=false&serverTimezone=Africa/Nairobi
-    username: ${DB_USER:radius}
-    password: ${DB_PASSWORD:changeme}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -23,9 +23,9 @@ spring:
 
 kopokopo:
   base-url: ${KOPOKOPO_BASE_URL:https://sandbox.kopokopo.com}
-  client-id: ${KOPOKOPO_CLIENT_ID:}
-  client-secret: ${KOPOKOPO_CLIENT_SECRET:}
-  till-number: ${KOPOKOPO_TILL_NUMBER:}
+  client-id: ${KOPOKOPO_CLIENT_ID:1zPMQexdOcLR3d8jsTXkKSuSZ2Tx6uTs695HuAmWyH4}
+  client-secret: ${KOPOKOPO_CLIENT_SECRET:nuemHqwbKUxmgPqYgeXbUuJ347P_rc9rwKg8jlXTpBs}
+  till-number: ${KOPOKOPO_TILL_NUMBER:K000000}
   payment-channel: "M-PESA STK Push"
   # Public URL Kopo Kopo will POST payment results to. Must be reachable from the internet (ngrok in sandbox).
   callback-url: ${KOPOKOPO_CALLBACK_URL:https://your-domain.example.com/api/v1/webhooks/kopokopo}

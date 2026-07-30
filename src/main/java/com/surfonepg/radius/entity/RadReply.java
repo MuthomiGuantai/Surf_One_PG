@@ -16,7 +16,7 @@ public class RadReply {
     @Column(nullable = false)
     private String attribute;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2)
     private String op = "=";
 
     @Column(nullable = false)
