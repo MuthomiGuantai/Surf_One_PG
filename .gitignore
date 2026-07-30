@@ -83,7 +83,4 @@ Thumbs.db
 .idea/libraries
 .idea/shelf
 
-# Spring Boot
-application-*.properties
-application-*.yml
 

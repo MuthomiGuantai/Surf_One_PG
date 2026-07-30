@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0-alpine
+    container_name: surf-one-pg-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: radius
+      MYSQL_USER: surfonepg
+      MYSQL_PASSWORD: surfonepg_dev_password
+      MYSQL_INITDB_SKIP_TZINFO: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "surfonepg", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - surf-one-pg-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: surf-one-pg-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/radius?useSSL=false&serverTimezone=Africa/Nairobi
+      SPRING_DATASOURCE_USERNAME: surfonepg
+      SPRING_DATASOURCE_PASSWORD: surfonepg_dev_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_FLYWAY_ENABLED: "true"
+      
+      # KopoKopo - Use sandbox for testing
+      KOPOKOPO_BASE_URL: https://sandbox.kopokopo.com
+      KOPOKOPO_CLIENT_ID: ${KOPOKOPO_CLIENT_ID:sandbox_client_id}
+      KOPOKOPO_CLIENT_SECRET: ${KOPOKOPO_CLIENT_SECRET:sandbox_client_secret}
+      KOPOKOPO_TILL_NUMBER: ${KOPOKOPO_TILL_NUMBER:K000000}
+      KOPOKOPO_CALLBACK_URL: ${KOPOKOPO_CALLBACK_URL:http://localhost:8080/api/v1/webhooks/kopokopo}
+      KOPOKOPO_API_WEBHOOK_SECRET: ${KOPOKOPO_API_WEBHOOK_SECRET:test_secret}
+      
+      # Application
+      NAS_IDENTIFIER: ${NAS_IDENTIFIER:mikrotik-hotspot-01}
+      PAYMENT_TIMEOUT_MINUTES: ${PAYMENT_TIMEOUT_MINUTES:5}
+      LOGGING_LEVEL_CO_KE_SURFONEPG: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+      
+      # Server
+      SERVER_PORT: 8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - surf-one-pg-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  surf-one-pg-network:
+    driver: bridge
+

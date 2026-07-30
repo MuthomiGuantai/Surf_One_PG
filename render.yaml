@@ -1,0 +1,75 @@
+services:
+  - type: web
+    name: surf-one-pg
+    env: docker
+    plan: standard
+    region: oregon
+
+    dockerfilePath: ./Dockerfile
+    
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      
+      - key: SPRING_APPLICATION_NAME
+        value: surf-one-pg
+      
+      - key: SERVER_PORT
+        value: "8080"
+      
+      # Database Configuration (Aiven MySQL)
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      
+      - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        value: com.mysql.cj.jdbc.Driver
+      
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.MySQL8Dialect
+      
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: validate
+      
+      - key: SPRING_FLYWAY_ENABLED
+        value: "true"
+      
+      # KopoKopo Configuration
+      - key: KOPOKOPO_API_HOST
+        sync: false
+      
+      - key: KOPOKOPO_API_KEY
+        sync: false
+      
+      - key: KOPOKOPO_CLIENT_ID
+        sync: false
+      
+      - key: KOPOKOPO_CLIENT_SECRET
+        sync: false
+      
+      - key: KOPOKOPO_API_WEBHOOK_SECRET
+        sync: false
+      
+      # RADIUS Configuration
+      - key: RADIUS_SECRET
+        sync: false
+      
+      - key: RADIUS_HOST
+        value: localhost
+      
+      - key: RADIUS_PORT
+        value: "1812"
+      
+      # Application Configuration
+      - key: LOGGING_LEVEL_COM_SURFONEPG
+        value: INFO
+      
+      - key: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
+        value: WARN
+
+
