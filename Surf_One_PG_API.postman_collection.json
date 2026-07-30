@@ -1,0 +1,574 @@
+{
+  "info": {
+    "name": "Surf One PG API",
+    "description": "Collection for Surf One Payment Gateway API - M-Pesa integration for WiFi access",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "surfone-pg-2026"
+  },
+  "item": [
+    {
+      "name": "Packages",
+      "item": [
+        {
+          "name": "Get All Packages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/packages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "packages"
+              ]
+            },
+            "description": "Retrieves a list of all active data packages available for purchase"
+          },
+          "response": [
+            {
+              "name": "Successful Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/packages",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "packages"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"packageCode\": \"STARTER_500MB\",\n    \"packageName\": \"Starter - 500MB\",\n    \"dataLimit\": 500,\n    \"validity\": 7,\n    \"price\": 49.00,\n    \"active\": true\n  },\n  {\n    \"id\": 2,\n    \"packageCode\": \"STANDARD_1GB\",\n    \"packageName\": \"Standard - 1GB\",\n    \"dataLimit\": 1024,\n    \"validity\": 7,\n    \"price\": 99.00,\n    \"active\": true\n  },\n  {\n    \"id\": 3,\n    \"packageCode\": \"PREMIUM_5GB\",\n    \"packageName\": \"Premium - 5GB\",\n    \"dataLimit\": 5120,\n    \"validity\": 30,\n    \"price\": 299.00,\n    \"active\": true\n  }\n]\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Initiate Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"0712345678\",\n  \"packageCode\": \"STARTER_500MB\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments"
+              ]
+            },
+            "description": "Initiates a payment transaction for a selected data package. This triggers an M-Pesa STK push to the customer's phone.\n\n**Request Parameters:**\n- `phoneNumber` (required): Customer's Kenyan phone number in format +254XXXXXXXXX or 0XXXXXXXXX\n- `packageCode` (required): The code of the data package to purchase\n\n**Response:**\n- `merchantReference`: Unique identifier for tracking this transaction\n- `status`: Current status of the transaction (PENDING, RECEIVED, PROVISIONED, FAILED, EXPIRED)\n- `message`: Human-readable status message"
+          },
+          "response": [
+            {
+              "name": "Accepted (STK Push Initiated)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phoneNumber\": \"0712345678\",\n  \"packageCode\": \"STARTER_500MB\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001234\",\n  \"status\": \"PENDING\",\n  \"message\": \"Check your phone and enter your M-Pesa PIN.\"\n}\n"
+            },
+            {
+              "name": "Bad Request (Invalid Phone)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phoneNumber\": \"123456\",\n  \"packageCode\": \"STARTER_500MB\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 400,\n  \"message\": \"Enter a valid Kenyan phone number\"\n}\n"
+            },
+            {
+              "name": "Bad Gateway (STK Push Failed)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phoneNumber\": \"0712345678\",\n  \"packageCode\": \"STARTER_500MB\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001235\",\n  \"status\": \"FAILED\",\n  \"message\": \"Could not initiate STK push. Please try again.\"\n}\n"
+            }
+          ]
+        },
+        {
+          "name": "Get Payment Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments/{{merchantReference}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "{{merchantReference}}"
+              ]
+            },
+            "description": "Retrieves the current status of a payment transaction. This endpoint is polled by the captive portal every couple of seconds while waiting for the webhook confirmation.\n\n**Path Parameters:**\n- `merchantReference` (required): The transaction reference returned from the initiate payment endpoint\n\n**Response:**\n- `merchantReference`: Transaction identifier\n- `status`: Current status (PENDING, RECEIVED, PROVISIONED, FAILED, EXPIRED)\n- `radiusUsername`: WiFi username (provided when status is PROVISIONED)\n- `radiusPassword`: WiFi password (provided when status is PROVISIONED)\n- `message`: Status description"
+          },
+          "response": [
+            {
+              "name": "Pending Payment",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments/TXN-20260730-001234",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "TXN-20260730-001234"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001234\",\n  \"status\": \"PENDING\",\n  \"radiusUsername\": null,\n  \"radiusPassword\": null,\n  \"message\": \"Waiting for payment confirmation.\"\n}\n"
+            },
+            {
+              "name": "Payment Received",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments/TXN-20260730-001234",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "TXN-20260730-001234"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001234\",\n  \"status\": \"RECEIVED\",\n  \"radiusUsername\": null,\n  \"radiusPassword\": null,\n  \"message\": \"Payment received, setting up your access.\"\n}\n"
+            },
+            {
+              "name": "Provisioned (Ready to Connect)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments/TXN-20260730-001234",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "TXN-20260730-001234"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001234\",\n  \"status\": \"PROVISIONED\",\n  \"radiusUsername\": \"user_20260730_001234\",\n  \"radiusPassword\": \"wifi_pwd_12345\",\n  \"message\": \"You're connected! Use the username and PIN shown to log in.\"\n}\n"
+            },
+            {
+              "name": "Payment Failed",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments/TXN-20260730-001234",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "TXN-20260730-001234"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"merchantReference\": \"TXN-20260730-001234\",\n  \"status\": \"FAILED\",\n  \"radiusUsername\": null,\n  \"radiusPassword\": null,\n  \"message\": \"Payment failed or was cancelled.\"\n}\n"
+            },
+            {
+              "name": "Transaction Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/payments/INVALID-REF",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "payments",
+                    "INVALID-REF"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "KopoKopo Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-KopoKopo-Signature",
+                "value": "{{kopokopo_signature}}",
+                "type": "text",
+                "description": "HMAC signature for webhook validation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"evt_20260730_001234\",\n  \"topic\": \"buygoods_transaction_received\",\n  \"created_at\": \"2026-07-30T06:45:00Z\",\n  \"data\": {\n    \"reference\": \"TXN-20260730-001234\",\n    \"amount\": 49.00,\n    \"currency\": \"KES\",\n    \"sender\": {\n      \"phone_number\": \"0712345678\"\n    },\n    \"metadata\": {\n      \"merchant_reference\": \"TXN-20260730-001234\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/webhooks/kopokopo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "webhooks",
+                "kopokopo"
+              ]
+            },
+            "description": "Webhook endpoint that receives payment callbacks from KopoKopo after customers complete M-Pesa transactions.\n\n**Headers:**\n- `X-KopoKopo-Signature` (required): HMAC-SHA256 signature for request validation\n\n**Body:**\n- `id`: Event ID from KopoKopo\n- `topic`: Event type (buygoods_transaction_received or incoming_payment)\n- `created_at`: Timestamp when event occurred\n- `data`: Transaction details including amount, reference, and sender info\n\n**Note:** This endpoint validates the incoming request signature before processing to ensure authenticity."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-KopoKopo-Signature",
+                    "value": "valid_signature_here",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"evt_20260730_001234\",\n  \"topic\": \"buygoods_transaction_received\",\n  \"created_at\": \"2026-07-30T06:45:00Z\",\n  \"data\": {\n    \"reference\": \"TXN-20260730-001234\",\n    \"amount\": 49.00,\n    \"currency\": \"KES\",\n    \"sender\": {\n      \"phone_number\": \"0712345678\"\n    },\n    \"metadata\": {\n      \"merchant_reference\": \"TXN-20260730-001234\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/webhooks/kopokopo",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "webhooks",
+                    "kopokopo"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"success\",\n  \"message\": \"Webhook processed successfully\"\n}\n"
+            },
+            {
+              "name": "Unauthorized (Invalid Signature)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "X-KopoKopo-Signature",
+                    "value": "invalid_signature",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"evt_20260730_001234\",\n  \"topic\": \"buygoods_transaction_received\",\n  \"created_at\": \"2026-07-30T06:45:00Z\",\n  \"data\": {\n    \"reference\": \"TXN-20260730-001234\",\n    \"amount\": 49.00,\n    \"currency\": \"KES\",\n    \"sender\": {\n      \"phone_number\": \"0712345678\"\n    },\n    \"metadata\": {\n      \"merchant_reference\": \"TXN-20260730-001234\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/webhooks/kopokopo",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "webhooks",
+                    "kopokopo"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"message\": \"Invalid webhook signature\"\n}\n"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "merchantReference",
+      "value": "TXN-20260730-001234",
+      "type": "string"
+    },
+    {
+      "key": "kopokopo_signature",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
+
+
+
