@@ -7,6 +7,345 @@
   },
   "item": [
     {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+254712345678\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            },
+            "description": "Create a new user account"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1"]
+            },
+            "description": "Get user details by user ID"
+          }
+        },
+        {
+          "name": "Get User by Phone",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/phone/{{phoneNumber}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "phone", "{{phoneNumber}}"]
+            },
+            "description": "Get user details by phone number"
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users"]
+            },
+            "description": "Get all users in the system"
+          }
+        },
+        {
+          "name": "Get Active Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/active/list",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "active", "list"]
+            },
+            "description": "Get all active users"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.updated@example.com\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1"]
+            },
+            "description": "Update user details"
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1/deactivate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1", "deactivate"]
+            },
+            "description": "Deactivate a user account"
+          }
+        },
+        {
+          "name": "Activate User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1/activate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1", "activate"]
+            },
+            "description": "Activate a user account"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "1"]
+            },
+            "description": "Delete a user account"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"packageId\": 1,\n  \"paymentTransactionId\": 123\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions"]
+            },
+            "description": "Create a new subscription linking a user to a data package"
+          }
+        },
+        {
+          "name": "Get Subscription by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "1"]
+            },
+            "description": "Get subscription details by ID"
+          }
+        },
+        {
+          "name": "Get User Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "user", "1"]
+            },
+            "description": "Get all subscriptions for a specific user"
+          }
+        },
+        {
+          "name": "Get User Active Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/user/1/active",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "user", "1", "active"]
+            },
+            "description": "Get active subscriptions for a specific user"
+          }
+        },
+        {
+          "name": "Get Subscriptions by Package",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/package/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "package", "1"]
+            },
+            "description": "Get all subscriptions for a specific package"
+          }
+        },
+        {
+          "name": "Get Subscriptions by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/status/ACTIVE",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "status", "ACTIVE"]
+            },
+            "description": "Get subscriptions by status (ACTIVE, EXPIRED, CANCELLED, PENDING)"
+          }
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions"]
+            },
+            "description": "Get all subscriptions in the system"
+          }
+        },
+        {
+          "name": "Activate Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/1/activate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "1", "activate"]
+            },
+            "description": "Activate a subscription (starts service period)"
+          }
+        },
+        {
+          "name": "Expire Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/1/expire",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "1", "expire"]
+            },
+            "description": "Mark a subscription as expired"
+          }
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/1/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "1", "cancel"]
+            },
+            "description": "Cancel a subscription"
+          }
+        },
+        {
+          "name": "Manually Trigger Expiry Check",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/expire-expired",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "expire-expired"]
+            },
+            "description": "Manually trigger the expiry check (normally runs every 5 minutes)"
+          }
+        },
+        {
+          "name": "Check Active Subscription",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/user/1/has-active/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "user", "1", "has-active", "1"]
+            },
+            "description": "Check if user has an active subscription for a specific package"
+          }
+        },
+        {
+          "name": "Get Subscription Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/1/renewals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "1", "renewals"]
+            },
+            "description": "Get renewal history for a subscription"
+          }
+        },
+        {
+          "name": "Get User Subscription Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/subscriptions/user/1/renewals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "subscriptions", "user", "1", "renewals"]
+            },
+            "description": "Get renewal history for all user subscriptions"
+          }
+        }
+      ]
+    },
+    {
       "name": "Packages",
       "item": [
         {
@@ -549,9 +888,141 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Renewals",
+      "item": [
+        {
+          "name": "Get Renewal by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "1"]
+            },
+            "description": "Get renewal record by ID"
+          }
+        },
+        {
+          "name": "Get Subscription Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/subscription/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "subscription", "1"]
+            },
+            "description": "Get all renewals for a specific subscription"
+          }
+        },
+        {
+          "name": "Get User Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/user/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "user", "1"]
+            },
+            "description": "Get all renewals initiated by a user"
+          }
+        },
+        {
+          "name": "Get User Latest Renewal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/user/1/latest",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "user", "1", "latest"]
+            },
+            "description": "Get the latest renewal for a user"
+          }
+        },
+        {
+          "name": "Get Subscription Latest Renewal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/subscription/1/latest",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "subscription", "1", "latest"]
+            },
+            "description": "Get the latest renewal for a subscription"
+          }
+        },
+        {
+          "name": "Get All Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals"]
+            },
+            "description": "Get all renewals in the system"
+          }
+        },
+        {
+          "name": "Get Renewals by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/date-range?start=2026-07-01T00:00:00&end=2026-07-31T23:59:59",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "date-range"],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "2026-07-01T00:00:00"
+                },
+                {
+                  "key": "end",
+                  "value": "2026-07-31T23:59:59"
+                }
+              ]
+            },
+            "description": "Get renewals within a specific date range"
+          }
+        },
+        {
+          "name": "Get User Renewal Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/user/1/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "user", "1", "stats"]
+            },
+            "description": "Get renewal statistics for a user (total renewals and total spent)"
+          }
+        },
+        {
+          "name": "Get Previous Subscription Renewals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/renewals/subscription/1/previous-renewals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "renewals", "subscription", "1", "previous-renewals"]
+            },
+            "description": "Get renewals where this subscription was the previous (renewed) subscription"
+          }
+        }
+      ]
     }
   ],
-  "variable": [
+   "variable": [
     {
       "key": "base_url",
       "value": "http://localhost:8080",
@@ -566,8 +1037,33 @@
       "key": "kopokopo_signature",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "phoneNumber",
+      "value": "+254712345678",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "packageId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "subscriptionId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "renewalId",
+      "value": "1",
+      "type": "string"
     }
-  ]
+   ]
 }
 
 

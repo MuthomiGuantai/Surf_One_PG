@@ -1,6 +1,8 @@
 package com.surfonepg.transaction.entity;
 
 import com.surfonepg.packages.entity.DataPackage;
+import com.surfonepg.user.entity.User;
+import com.surfonepg.user.entity.Subscription;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -29,8 +31,19 @@ public class PaymentTransaction {
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "package_id", nullable = false)
     private DataPackage dataPackage;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscription_id")
+    private Subscription subscription;
+
+    @Column(name = "is_renewal", nullable = false)
+    private boolean isRenewal = false;
 
     @Column(name = "amount_kes", nullable = false)
     private BigDecimal amountKes;
@@ -73,7 +86,13 @@ public class PaymentTransaction {
     public String getKopoKopoResourceId() { return kopoKopoResourceId; }
     public void setKopoKopoResourceId(String v) { this.kopoKopoResourceId = v; }
     public String getPhoneNumber() { return phoneNumber; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     public DataPackage getDataPackage() { return dataPackage; }
+    public Subscription getSubscription() { return subscription; }
+    public void setSubscription(Subscription subscription) { this.subscription = subscription; }
+    public boolean isRenewal() { return isRenewal; }
+    public void setRenewal(boolean renewal) { isRenewal = renewal; }
     public BigDecimal getAmountKes() { return amountKes; }
     public String getMpesaReceipt() { return mpesaReceipt; }
     public void setMpesaReceipt(String v) { this.mpesaReceipt = v; }
