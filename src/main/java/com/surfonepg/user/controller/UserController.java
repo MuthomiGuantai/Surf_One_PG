@@ -8,6 +8,7 @@ import com.surfonepg.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
             .map(user -> ResponseEntity.ok(new UserResponse(user)))
@@ -41,6 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/phone/{phoneNumber}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<UserResponse> getUserByPhoneNumber(@PathVariable String phoneNumber) {
         return userService.getUserByPhoneNumber(phoneNumber)
             .map(user -> ResponseEntity.ok(new UserResponse(user)))
@@ -48,6 +51,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers()
             .stream()
@@ -57,6 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/active/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getActiveUsers() {
         List<UserResponse> users = userService.getActiveUsers()
             .stream()
@@ -66,6 +71,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request
@@ -79,6 +85,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);
@@ -89,6 +96,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> deactivateUser(@PathVariable Long id) {
         try {
             User user = userService.deactivateUser(id);
@@ -99,6 +107,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> activateUser(@PathVariable Long id) {
         try {
             User user = userService.activateUser(id);
@@ -108,4 +117,3 @@ public class UserController {
         }
     }
 }
-

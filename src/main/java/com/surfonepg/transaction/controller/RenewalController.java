@@ -5,6 +5,7 @@ import com.surfonepg.transaction.entity.Renewal;
 import com.surfonepg.transaction.service.RenewalService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class RenewalController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<RenewalResponse> getRenewalById(@PathVariable Long id) {
         return renewalService.getRenewalById(id)
             .map(renewal -> ResponseEntity.ok(new RenewalResponse(renewal)))
@@ -29,6 +31,7 @@ public class RenewalController {
     }
 
     @GetMapping("/subscription/{subscriptionId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getSubscriptionRenewals(@PathVariable Long subscriptionId) {
         try {
             List<RenewalResponse> renewals = renewalService.getSubscriptionRenewals(subscriptionId)
@@ -42,6 +45,7 @@ public class RenewalController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getUserRenewals(@PathVariable Long userId) {
         try {
             List<RenewalResponse> renewals = renewalService.getUserRenewals(userId)
@@ -55,6 +59,7 @@ public class RenewalController {
     }
 
     @GetMapping("/user/{userId}/latest")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<RenewalResponse> getUserLatestRenewal(@PathVariable Long userId) {
         try {
             List<Renewal> userRenewals = renewalService.getUserRenewals(userId);
@@ -68,6 +73,7 @@ public class RenewalController {
     }
 
     @GetMapping("/subscription/{subscriptionId}/latest")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RenewalResponse> getSubscriptionLatestRenewal(@PathVariable Long subscriptionId) {
         try {
             return renewalService.getLatestRenewal(subscriptionId)
@@ -79,6 +85,7 @@ public class RenewalController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getAllRenewals() {
         List<RenewalResponse> renewals = renewalService.getAllRenewals()
             .stream()
@@ -88,6 +95,7 @@ public class RenewalController {
     }
 
     @GetMapping("/date-range")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getRenewalsByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
@@ -100,6 +108,7 @@ public class RenewalController {
     }
 
     @GetMapping("/user/{userId}/stats")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<RenewalStatsResponse> getUserRenewalStats(@PathVariable Long userId) {
         try {
             RenewalService.RenewalStats stats = renewalService.getUserRenewalStats(userId);
@@ -110,6 +119,7 @@ public class RenewalController {
     }
 
     @GetMapping("/subscription/{subscriptionId}/previous-renewals")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getPreviousSubscriptionRenewals(@PathVariable Long subscriptionId) {
         try {
             List<RenewalResponse> renewals = renewalService.getPreviousSubscriptionRenewals(subscriptionId)
@@ -135,4 +145,3 @@ public class RenewalController {
         public java.math.BigDecimal getTotalSpent() { return totalSpent; }
     }
 }
-
