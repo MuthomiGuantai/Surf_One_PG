@@ -4,6 +4,7 @@ import com.surfonepg.user.entity.User;
 import com.surfonepg.user.dto.CreateUserRequest;
 import com.surfonepg.user.dto.UpdateUserRequest;
 import com.surfonepg.user.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,24 +15,36 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public User createUser(CreateUserRequest request) {
         // Check if user already exists by phone number
-        Optional<User> existingUser = userRepository.findByPhoneNumber(request.getPhoneNumber());
-        if (existingUser.isPresent()) {
+        Optional<User> existingUserPhone = userRepository.findByPhoneNumber(request.getPhoneNumber());
+        if (existingUserPhone.isPresent()) {
             throw new IllegalArgumentException("User with phone number " + request.getPhoneNumber() + " already exists");
         }
 
+        // Check if user already exists by email
+        Optional<User> existingUserEmail = userRepository.findByEmail(request.getEmail());
+        if (existingUserEmail.isPresent()) {
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " already exists");
+        }
+
+        // Encode the password
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = new User(
             request.getPhoneNumber(),
+            request.getEmail(),
+            encodedPassword,
             request.getFirstName(),
-            request.getLastName(),
-            request.getEmail()
+            request.getLastName()
         );
         return userRepository.save(user);
     }

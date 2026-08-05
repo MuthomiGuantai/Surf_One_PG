@@ -8,6 +8,7 @@ import com.surfonepg.transaction.dto.RenewalResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class SubscriptionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<SubscriptionResponse> createSubscription(
             @Valid @RequestBody CreateSubscriptionRequest request
     ) {
@@ -36,6 +38,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<SubscriptionResponse> getSubscriptionById(@PathVariable Long id) {
         return subscriptionService.getSubscriptionById(id)
             .map(subscription -> ResponseEntity.ok(new SubscriptionResponse(subscription)))
@@ -43,6 +46,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<List<SubscriptionResponse>> getUserSubscriptions(@PathVariable Long userId) {
         try {
             List<SubscriptionResponse> subscriptions = subscriptionService.getUserSubscriptions(userId)
@@ -56,6 +60,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/user/{userId}/active")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<List<SubscriptionResponse>> getUserActiveSubscriptions(@PathVariable Long userId) {
         try {
             List<SubscriptionResponse> subscriptions = subscriptionService.getUserActiveSubscriptions(userId)
@@ -69,6 +74,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/package/{packageId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SubscriptionResponse>> getSubscriptionsByPackage(@PathVariable Long packageId) {
         try {
             List<SubscriptionResponse> subscriptions = subscriptionService.getSubscriptionsByPackage(packageId)
@@ -82,6 +88,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/status/{status}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SubscriptionResponse>> getSubscriptionsByStatus(@PathVariable String status) {
         try {
             Subscription.Status statusEnum = Subscription.Status.valueOf(status.toUpperCase());
@@ -96,6 +103,7 @@ public class SubscriptionController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SubscriptionResponse>> getAllSubscriptions() {
         List<SubscriptionResponse> subscriptions = subscriptionService.getAllSubscriptions()
             .stream()
@@ -105,6 +113,7 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SubscriptionResponse> activateSubscription(@PathVariable Long id) {
         try {
             Subscription subscription = subscriptionService.activateSubscription(id);
@@ -115,6 +124,7 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{id}/expire")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SubscriptionResponse> expireSubscription(@PathVariable Long id) {
         try {
             Subscription subscription = subscriptionService.expireSubscription(id);
@@ -125,6 +135,7 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SubscriptionResponse> cancelSubscription(@PathVariable Long id) {
         try {
             Subscription subscription = subscriptionService.cancelSubscription(id);
@@ -135,12 +146,14 @@ public class SubscriptionController {
     }
 
     @PostMapping("/expire-expired")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> expireExpiredSubscriptions() {
         subscriptionService.expireExpiredSubscriptions();
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{userId}/has-active/{packageId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<Boolean> hasActiveSubscription(
             @PathVariable Long userId,
             @PathVariable Long packageId
@@ -154,6 +167,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/{subscriptionId}/renewals")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getSubscriptionRenewals(@PathVariable Long subscriptionId) {
         try {
             List<RenewalResponse> renewals = subscriptionService.getSubscriptionRenewals(subscriptionId)
@@ -167,6 +181,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/user/{userId}/renewals")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     public ResponseEntity<List<RenewalResponse>> getUserRenewals(@PathVariable Long userId) {
         try {
             List<RenewalResponse> renewals = subscriptionService.getUserRenewals(userId)
@@ -179,7 +194,3 @@ public class SubscriptionController {
         }
     }
 }
-
-
-
-

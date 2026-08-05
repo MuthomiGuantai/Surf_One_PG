@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Surf One PG API",
-    "description": "Collection for Surf One Payment Gateway API - M-Pesa integration for WiFi access",
+    "description": "Collection for Surf One Payment Gateway API - M-Pesa integration for WiFi access\n\nAUTHENTICATION:\nThis collection uses HTTP Basic Auth for protected endpoints.\n- Username: Email (e.g., john@example.com)\n- Password: User password\n- Set {{email}} and {{password}} environment variables before testing protected endpoints\n\nPUBLIC ENDPOINTS (no auth required):\n- GET /api/v1/packages\n- POST /api/v1/users (registration)\n- POST /api/v1/payments\n- GET /api/v1/payments/{ref}\n\nPROTECTED ENDPOINTS (Basic Auth required):\n- All User endpoints (except Create/Register)\n- All Subscription endpoints\n- All Renewal endpoints",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "surfone-pg-2026"
   },
@@ -10,339 +10,669 @@
       "name": "Users",
       "item": [
         {
-          "name": "Create User",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"phoneNumber\": \"+254712345678\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/users",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"]
-            },
-            "description": "Create a new user account"
-          }
-        },
+           "name": "Create User",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json",
+                 "type": "text"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"phoneNumber\": \"+254712345678\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"securePassword123\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/api/v1/users",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users"]
+             },
+             "description": "Create a new user account (Public endpoint - no auth required)\n\nRequest body:\n- phoneNumber: Required, unique\n- firstName: Required\n- lastName: Required\n- email: Required, unique, valid format\n- password: Required, minimum 6 characters"
+           }
+         },
         {
-          "name": "Get User by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "1"]
-            },
-            "description": "Get user details by user ID"
-          }
-        },
+           "name": "Get User by ID",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "1"]
+             },
+             "description": "Get user details by user ID (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User by Phone",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/phone/{{phoneNumber}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "phone", "{{phoneNumber}}"]
-            },
-            "description": "Get user details by phone number"
-          }
-        },
+           "name": "Get User by Phone",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/phone/{{phoneNumber}}",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "phone", "{{phoneNumber}}"]
+             },
+             "description": "Get user details by phone number (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get All Users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"]
-            },
-            "description": "Get all users in the system"
-          }
-        },
+           "name": "Get All Users",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users"]
+             },
+             "description": "Get all users in the system (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Active Users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/active/list",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "active", "list"]
-            },
-            "description": "Get all active users"
-          }
-        },
+           "name": "Get Active Users",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/active/list",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "active", "list"]
+             },
+             "description": "Get all active users (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Update User",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.updated@example.com\",\n  \"active\": true\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "1"]
-            },
-            "description": "Update user details"
-          }
-        },
+           "name": "Update User",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json",
+                 "type": "text"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.updated@example.com\",\n  \"active\": true\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "1"]
+             },
+             "description": "Update user details (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Deactivate User",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/1/deactivate",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "1", "deactivate"]
-            },
-            "description": "Deactivate a user account"
-          }
-        },
+           "name": "Deactivate User",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/1/deactivate",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "1", "deactivate"]
+             },
+             "description": "Deactivate a user account (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Activate User",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/1/activate",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "1", "activate"]
-            },
-            "description": "Activate a user account"
-          }
-        },
+           "name": "Activate User",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/1/activate",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "1", "activate"]
+             },
+             "description": "Activate a user account (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Delete User",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/users/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "1"]
-            },
-            "description": "Delete a user account"
-          }
-        }
+           "name": "Delete User",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/users/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "users", "1"]
+             },
+             "description": "Delete a user account (ADMIN only - Requires Basic Auth)"
+           }
+         }
       ]
     },
     {
       "name": "Subscriptions",
       "item": [
         {
-          "name": "Create Subscription",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"userId\": 1,\n  \"packageId\": 1,\n  \"paymentTransactionId\": 123\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions"]
-            },
-            "description": "Create a new subscription linking a user to a data package"
-          }
-        },
+           "name": "Create Subscription",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json",
+                 "type": "text"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"userId\": 1,\n  \"packageId\": 1,\n  \"paymentTransactionId\": 123\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions"]
+             },
+             "description": "Create a new subscription linking a user to a data package (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscription by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "1"]
-            },
-            "description": "Get subscription details by ID"
-          }
-        },
+           "name": "Get Subscription by ID",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "1"]
+             },
+             "description": "Get subscription details by ID (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Subscriptions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/user/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "user", "1"]
-            },
-            "description": "Get all subscriptions for a specific user"
-          }
-        },
+           "name": "Get User Subscriptions",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/user/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "user", "1"]
+             },
+             "description": "Get all subscriptions for a specific user (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Active Subscriptions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/user/1/active",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "user", "1", "active"]
-            },
-            "description": "Get active subscriptions for a specific user"
-          }
-        },
+           "name": "Get User Active Subscriptions",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/user/1/active",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "user", "1", "active"]
+             },
+             "description": "Get active subscriptions for a specific user (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscriptions by Package",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/package/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "package", "1"]
-            },
-            "description": "Get all subscriptions for a specific package"
-          }
-        },
+           "name": "Get Subscriptions by Package",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/package/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "package", "1"]
+             },
+             "description": "Get all subscriptions for a specific package (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscriptions by Status",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/status/ACTIVE",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "status", "ACTIVE"]
-            },
-            "description": "Get subscriptions by status (ACTIVE, EXPIRED, CANCELLED, PENDING)"
-          }
-        },
+           "name": "Get Subscriptions by Status",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/status/ACTIVE",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "status", "ACTIVE"]
+             },
+             "description": "Get subscriptions by status (ADMIN only - Requires Basic Auth) - Status: ACTIVE, EXPIRED, CANCELLED, PENDING"
+           }
+         },
         {
-          "name": "Get All Subscriptions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions"]
-            },
-            "description": "Get all subscriptions in the system"
-          }
-        },
+           "name": "Get All Subscriptions",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions"]
+             },
+             "description": "Get all subscriptions in the system (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Activate Subscription",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/1/activate",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "1", "activate"]
-            },
-            "description": "Activate a subscription (starts service period)"
-          }
-        },
+           "name": "Activate Subscription",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/1/activate",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "1", "activate"]
+             },
+             "description": "Activate a subscription (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Expire Subscription",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/1/expire",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "1", "expire"]
-            },
-            "description": "Mark a subscription as expired"
-          }
-        },
+           "name": "Expire Subscription",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/1/expire",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "1", "expire"]
+             },
+             "description": "Mark a subscription as expired (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Cancel Subscription",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/1/cancel",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "1", "cancel"]
-            },
-            "description": "Cancel a subscription"
-          }
-        },
+           "name": "Cancel Subscription",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "PUT",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/1/cancel",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "1", "cancel"]
+             },
+             "description": "Cancel a subscription (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Manually Trigger Expiry Check",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/expire-expired",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "expire-expired"]
-            },
-            "description": "Manually trigger the expiry check (normally runs every 5 minutes)"
-          }
-        },
+           "name": "Manually Trigger Expiry Check",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "POST",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/expire-expired",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "expire-expired"]
+             },
+             "description": "Manually trigger the expiry check (ADMIN only - Requires Basic Auth) - normally runs every 5 minutes"
+           }
+         },
         {
-          "name": "Check Active Subscription",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/user/1/has-active/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "user", "1", "has-active", "1"]
-            },
-            "description": "Check if user has an active subscription for a specific package"
-          }
-        },
+           "name": "Check Active Subscription",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/user/1/has-active/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "user", "1", "has-active", "1"]
+             },
+             "description": "Check if user has an active subscription for a specific package (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscription Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/1/renewals",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "1", "renewals"]
-            },
-            "description": "Get renewal history for a subscription"
-          }
-        },
+           "name": "Get Subscription Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/1/renewals",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "1", "renewals"]
+             },
+             "description": "Get renewal history for a subscription (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Subscription Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/subscriptions/user/1/renewals",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "subscriptions", "user", "1", "renewals"]
-            },
-            "description": "Get renewal history for all user subscriptions"
-          }
-        }
+           "name": "Get User Subscription Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/subscriptions/user/1/renewals",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "subscriptions", "user", "1", "renewals"]
+             },
+             "description": "Get renewal history for all user subscriptions (Requires Basic Auth)"
+           }
+         }
       ]
     },
     {
@@ -893,177 +1223,324 @@
       "name": "Renewals",
       "item": [
         {
-          "name": "Get Renewal by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "1"]
-            },
-            "description": "Get renewal record by ID"
-          }
-        },
+           "name": "Get Renewal by ID",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "1"]
+             },
+             "description": "Get renewal record by ID (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscription Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/subscription/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "subscription", "1"]
-            },
-            "description": "Get all renewals for a specific subscription"
-          }
-        },
+           "name": "Get Subscription Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/subscription/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "subscription", "1"]
+             },
+             "description": "Get all renewals for a specific subscription (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/user/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "user", "1"]
-            },
-            "description": "Get all renewals initiated by a user"
-          }
-        },
+           "name": "Get User Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/user/1",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "user", "1"]
+             },
+             "description": "Get all renewals initiated by a user (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Latest Renewal",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/user/1/latest",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "user", "1", "latest"]
-            },
-            "description": "Get the latest renewal for a user"
-          }
-        },
+           "name": "Get User Latest Renewal",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/user/1/latest",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "user", "1", "latest"]
+             },
+             "description": "Get the latest renewal for a user (Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Subscription Latest Renewal",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/subscription/1/latest",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "subscription", "1", "latest"]
-            },
-            "description": "Get the latest renewal for a subscription"
-          }
-        },
+           "name": "Get Subscription Latest Renewal",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/subscription/1/latest",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "subscription", "1", "latest"]
+             },
+             "description": "Get the latest renewal for a subscription (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get All Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals"]
-            },
-            "description": "Get all renewals in the system"
-          }
-        },
+           "name": "Get All Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals"]
+             },
+             "description": "Get all renewals in the system (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get Renewals by Date Range",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/date-range?start=2026-07-01T00:00:00&end=2026-07-31T23:59:59",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "date-range"],
-              "query": [
-                {
-                  "key": "start",
-                  "value": "2026-07-01T00:00:00"
-                },
-                {
-                  "key": "end",
-                  "value": "2026-07-31T23:59:59"
-                }
-              ]
-            },
-            "description": "Get renewals within a specific date range"
-          }
-        },
+           "name": "Get Renewals by Date Range",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/date-range?start=2026-07-01T00:00:00&end=2026-07-31T23:59:59",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "date-range"],
+               "query": [
+                 {
+                   "key": "start",
+                   "value": "2026-07-01T00:00:00"
+                 },
+                 {
+                   "key": "end",
+                   "value": "2026-07-31T23:59:59"
+                 }
+               ]
+             },
+             "description": "Get renewals within a specific date range (ADMIN only - Requires Basic Auth)"
+           }
+         },
         {
-          "name": "Get User Renewal Stats",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/user/1/stats",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "user", "1", "stats"]
-            },
-            "description": "Get renewal statistics for a user (total renewals and total spent)"
-          }
-        },
+           "name": "Get User Renewal Stats",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/user/1/stats",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "user", "1", "stats"]
+             },
+             "description": "Get renewal statistics for a user (total renewals and total spent) - Requires Basic Auth"
+           }
+         },
         {
-          "name": "Get Previous Subscription Renewals",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/renewals/subscription/1/previous-renewals",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "renewals", "subscription", "1", "previous-renewals"]
-            },
-            "description": "Get renewals where this subscription was the previous (renewed) subscription"
-          }
-        }
+           "name": "Get Previous Subscription Renewals",
+           "request": {
+             "auth": {
+               "type": "basic",
+               "basic": [
+                 {
+                   "key": "password",
+                   "value": "{{password}}",
+                   "type": "string"
+                 },
+                 {
+                   "key": "username",
+                   "value": "{{email}}",
+                   "type": "string"
+                 }
+               ]
+             },
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/api/v1/renewals/subscription/1/previous-renewals",
+               "host": ["{{base_url}}"],
+               "path": ["api", "v1", "renewals", "subscription", "1", "previous-renewals"]
+             },
+             "description": "Get renewals where this subscription was the previous (renewed) subscription (ADMIN only - Requires Basic Auth)"
+           }
+         }
       ]
     }
   ],
-   "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "merchantReference",
-      "value": "TXN-20260730-001234",
-      "type": "string"
-    },
-    {
-      "key": "kopokopo_signature",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "phoneNumber",
-      "value": "+254712345678",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "packageId",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "subscriptionId",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "renewalId",
-      "value": "1",
-      "type": "string"
-    }
-   ]
+    "variable": [
+     {
+       "key": "base_url",
+       "value": "http://localhost:8080",
+       "type": "string"
+     },
+     {
+       "key": "email",
+       "value": "john@example.com",
+       "type": "string",
+       "description": "Email address for Basic Auth (username)"
+     },
+     {
+       "key": "password",
+       "value": "securePassword123",
+       "type": "string",
+       "description": "Password for Basic Auth"
+     },
+     {
+       "key": "merchantReference",
+       "value": "TXN-20260730-001234",
+       "type": "string"
+     },
+     {
+       "key": "kopokopo_signature",
+       "value": "",
+       "type": "string"
+     },
+     {
+       "key": "phoneNumber",
+       "value": "+254712345678",
+       "type": "string"
+     },
+     {
+       "key": "userId",
+       "value": "1",
+       "type": "string"
+     },
+     {
+       "key": "packageId",
+       "value": "1",
+       "type": "string"
+     },
+     {
+       "key": "subscriptionId",
+       "value": "1",
+       "type": "string"
+     },
+     {
+       "key": "renewalId",
+       "value": "1",
+       "type": "string"
+     }
+    ]
 }
 
 
